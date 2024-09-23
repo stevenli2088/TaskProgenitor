@@ -1,9 +1,25 @@
 package com.mcl2088.TaskProgenitor.task;
 
+import jakarta.persistence.*;
+
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
-
+@Entity
+@Table
 public class Task {
+    @Id
+    @SequenceGenerator(
+            name = "task_sequence",
+            sequenceName = "task_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "task_sequence"
+    )
     private long id;
     private String taskName;
     private String assigner;
@@ -11,29 +27,32 @@ public class Task {
 
     private String description;
     private LocalDate deadline;
-    private int timeLeft;
     private LocalDate dateCreated;
+    @Transient
+    private String daysLeft;
+    @Transient
+    private boolean dueToday;
+    @Transient
+    private boolean overdue;
 
     public Task() {
 
     }
 
-    public Task(String taskName, String assigner, String description, LocalDate deadline, int timeLeft, LocalDate dateCreated) {
+    public Task(String taskName, String assigner, String description, LocalDate deadline,  LocalDate dateCreated) {
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
         this.deadline = deadline;
-        this.timeLeft = timeLeft;
         this.dateCreated = dateCreated;
     }
 
-    public Task(long id, String taskName, String assigner, String description, LocalDate deadline, int timeLeft, LocalDate dateCreated) {
+    public Task(long id, String taskName, String assigner, String description, LocalDate deadline, LocalDate dateCreated) {
         this.id = id;
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
         this.deadline = deadline;
-        this.timeLeft = timeLeft;
         this.dateCreated = dateCreated;
     }
 
@@ -45,8 +64,10 @@ public class Task {
                 ", assigner='" + assigner + '\'' +
                 ", description='" + description + '\'' +
                 ", deadline=" + deadline +
-                ", timeLeft=" + timeLeft +
                 ", dateCreated=" + dateCreated +
+                ", timeLeft=" + daysLeft +
+                ", dueToday=" + dueToday +
+                ", overdue=" + overdue +
                 '}';
     }
 
@@ -90,12 +111,15 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public int getTimeLeft() {
-        return timeLeft;
+    public String getDaysLeft() {
+        LocalDate now = LocalDate.now();
+        long days = ChronoUnit.DAYS.between(now, deadline);
+
+        return String.format("%d days", days);
     }
 
-    public void setTimeLeft(int timeLeft) {
-        this.timeLeft = timeLeft;
+    public void setDaysLeft(String daysLeft) {
+        this.daysLeft = daysLeft;
     }
 
     public LocalDate getDateCreated() {
@@ -104,5 +128,24 @@ public class Task {
 
     public void setDateCreated(LocalDate dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public boolean isDueToday() {
+        LocalDate now = LocalDate.now();
+        return now.equals(deadline);
+    }
+
+    public void setDueToday(boolean dueToday) {
+        this.dueToday = dueToday;
+    }
+
+
+    public boolean isOverdue() {
+        LocalDate now = LocalDate.now();
+        return now.isAfter(deadline);
+    }
+
+    public void setOverdue(boolean overdue) {
+        this.overdue = overdue;
     }
 }
