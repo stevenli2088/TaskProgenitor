@@ -42,7 +42,7 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
     @Transactional
-    public void updateTask(Long taskId, LocalDate deadline, String taskName, String description){
+    public void updateTask(Long taskId, LocalDate deadline, String taskName, String description, Boolean completed){
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalStateException("Task with id " + taskId + " does not exist."));
         if(deadline != null && !Objects.equals(task.getDeadline(),deadline)){
             task.setDeadline(deadline);
@@ -53,5 +53,6 @@ public class TaskService {
         if(description != null && description.length() > 0 && !Objects.equals(task.getDescription(),description)){
             task.setDescription(description);
         }
+        task.setCompleted(completed);
     }
 }

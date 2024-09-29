@@ -33,6 +33,8 @@ public class Task {
     @Transient
     private boolean dueToday;
     @Transient
+    private boolean completed;
+    @Transient
     private boolean overdue;
 
     public Task() {
@@ -68,6 +70,7 @@ public class Task {
                 ", timeLeft=" + daysLeft +
                 ", dueToday=" + dueToday +
                 ", overdue=" + overdue +
+                ", completed=" + completed +
                 '}';
     }
 
@@ -116,6 +119,14 @@ public class Task {
         long days = ChronoUnit.DAYS.between(now, deadline);
 
         return String.format("%d days", days);
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public void setDaysLeft(String daysLeft) {

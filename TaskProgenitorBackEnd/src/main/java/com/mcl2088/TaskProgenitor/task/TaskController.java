@@ -32,8 +32,9 @@ public class TaskController {
     public void updateTask(@PathVariable("taskId") Long taskId,
                            @RequestParam(required = false) LocalDate deadline,
                            @RequestParam(required = false) String taskName,
-                           @RequestParam(required = false) String description){
-        taskService.updateTask(taskId, deadline, taskName, description);
+                           @RequestParam(required = false) String description,
+                           @RequestParam(required = false) Boolean completed){
+        taskService.updateTask(taskId, deadline, taskName, description, completed);
 
     }
 
