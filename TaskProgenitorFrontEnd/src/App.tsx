@@ -1,15 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import React, { useState } from 'react';
+import './App.css'
+import InputField from './components/InputField'
+import { Task } from './models/task';
+
+const App: React.FC = () => {
+  const [taskName, setTaskName] = useState<string>("");
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(taskName){
+      setTasks([...tasks,{id:Date.now(), taskName:taskName, isComplete: false}]);
+      setTaskName("");
+    }
+  };
+
+  console.log(tasks);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
+        <div>
+          <InputField taskName={taskName} setTaskName={setTaskName} handleAdd={handleAdd}/>
+        </div>
+        
+    </>
+  )
+}
+
+export default App
+
+
+
+// const [count, setCount] = useState(0)
+{/* <div>
+<a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
         <a href="https://react.dev" target="_blank">
@@ -27,9 +52,4 @@ function App() {
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
+      </p> */}
