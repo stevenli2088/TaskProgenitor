@@ -49,3 +49,18 @@
     width: 90%;
     flex-wrap: wrap;
 }
+
+.tasks__card{
+    display: flex;
+    width: 29.5%;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 15px;
+}
+.tasks__card--text {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    font-size: 20px;
+  }
+  
