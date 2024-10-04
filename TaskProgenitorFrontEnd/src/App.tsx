@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './App.css'
 import InputField from './components/InputField'
 import { Task } from './models/task';
+import TaskList from './components/TaskList';
 
 const App: React.FC = () => {
   const [taskName, setTaskName] = useState<string>("");
@@ -11,7 +12,9 @@ const App: React.FC = () => {
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if(taskName){
-      setTasks([...tasks,{id:Date.now(), taskName:taskName, isComplete: false}]);
+      setTasks([...tasks,{id:Date.now(), 
+        taskName:taskName, 
+        isComplete: false}]);
       setTaskName("");
     }
   };
@@ -21,7 +24,16 @@ const App: React.FC = () => {
   return (
     <>
         <div>
-          <InputField taskName={taskName} setTaskName={setTaskName} handleAdd={handleAdd}/>
+          <span className="heading">Task Progenitor</span>
+          <InputField taskName={taskName} 
+          setTaskName={setTaskName} 
+          handleAdd={handleAdd}/>
+          <TaskList tasks={tasks}
+          setTasks={setTasks}
+          />
+          {/* {tasks.map((t) => (
+            <li>{t.taskName}</li>
+          ))} */}
         </div>
         
     </>
