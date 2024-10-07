@@ -1,34 +1,64 @@
 
 import React, { useState } from 'react';
 import './App.css'
-import InputField from './components/InputField'
+import InputFields from './components/InputFields'
 import { Task } from './models/task';
 import TaskList from './components/TaskList';
 import { Box, Typography } from '@mui/material';
+import { TaskFormData } from './models/taskFormData';
+import dayjs from 'dayjs';
 
 const App: React.FC = () => {
-  const [taskName, setTaskName] = useState<string>("");
+  const [taskFormData, setTaskFormData] = useState<TaskFormData>({
+    taskName: "",
+    description: "",
+    dueDate: null
+  });
   const [tasks, setTasks] = useState<Task[]>([]);
-
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    console.log(name);
+    setTaskFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+  const handleDateChange = (newDate: dayjs.Dayjs | null) => {
+    setTaskFormData((prevFormData) => ({
+      ...prevFormData,
+      dueDate: newDate,
+    }));
+  };
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    if(taskName){
+    if(taskFormData.taskName){
       setTasks([...tasks,{id:Date.now(), 
-        taskName:taskName, 
+        taskName:taskFormData.taskName, 
+        description: taskFormData.description,
+        dueDate: taskFormData.dueDate,
         isComplete: false}]);
-      setTaskName("");
+      setTaskFormData(
+        {
+          taskName: "",
+          description: "",
+          dueDate: null
+        }
+      );
     }
+    console.log(taskFormData.taskName);
   };
 
-  console.log(tasks);
 
   return (
     <>
         <Box>
           <Typography variant='h2'>Task Progenitor</Typography>
-          <InputField taskName={taskName} 
-          setTaskName={setTaskName} 
-          handleAdd={handleAdd}/>
+          <InputFields taskFormData={taskFormData} 
+          setTaskFormData={setTaskFormData} 
+          handleAdd={handleAdd}
+          handleInputChange={handleInputChange}
+          handleDateChange={handleDateChange}/>
           <TaskList tasks={tasks}
           setTasks={setTasks}
           />

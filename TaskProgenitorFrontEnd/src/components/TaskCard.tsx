@@ -1,8 +1,5 @@
 import React from 'react';
 import { Task } from '../models/task';
-import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
-import { MdDone } from 'react-icons/md';
-import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
@@ -23,16 +20,33 @@ const TaskCard: React.FC<Props> = ({task, tasks, setTasks}) => {
     setTasks(updatedTasks);
 };
   return (
-    <Box sx={{backgroundColor: 'black', borderRadius:10, padding: 2, margin:2}}>
-    <CardContent >
+    <Box sx={{backgroundColor: '#FFE4B5', borderRadius:10, padding: 2, margin:2}}>
+    <CardContent 
+    sx={{
+      color: 'black',
+      '& .MuiTypography-root': {
+        color: 'inherit', 
+      },
+    }}
+    >
       <Typography variant="h5" component="div">
         {task.taskName}
       </Typography>
-      <Typography variant="h7" component="div">
-        Description of Task
+      <Typography variant="h6" component="div">
+        {task.description}
+      </Typography>
+      <Typography variant="h6" component="div">
+        Due date:
       </Typography>
     </CardContent>
-    <CardActions>
+    <CardActions
+    
+    sx={{
+      color: 'black',
+      '& .MuiButton-root': {
+        color: 'inherit', 
+      },
+    }}>
     <Button size="small">Mark as Done</Button>
     <Button size="small">Edit</Button>
     <Button size="small" onClick={() => handleDelete(task.id)}>Delete</Button>
