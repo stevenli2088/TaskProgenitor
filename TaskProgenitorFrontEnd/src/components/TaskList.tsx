@@ -2,6 +2,7 @@ import React from 'react'
 import { Task } from '../models/task';
 import "./styles.css"
 import TaskCard from './TaskCard';
+import Stack from '@mui/material/Stack';
 
 interface Props{
     tasks: Task[];
@@ -9,8 +10,18 @@ interface Props{
 }
 const TaskList: React.FC<Props> = ({tasks, setTasks}) => {
   return (
-    <div className = "tasks">
-        {tasks.map(task => (
+    // <div className = "tasks">
+    //     {tasks.map(task => (
+    //         <TaskCard 
+    //         task ={task}
+    //         key = {task.id}
+    //         tasks = {tasks}
+    //         setTasks = {setTasks}
+    //         />
+    //     ))}    
+    // </div>
+    <Stack sx={{marginTop:2}}>
+      {tasks.map(task => (
             <TaskCard 
             task ={task}
             key = {task.id}
@@ -18,7 +29,7 @@ const TaskList: React.FC<Props> = ({tasks, setTasks}) => {
             setTasks = {setTasks}
             />
         ))}    
-    </div>
+    </Stack>
   )
 }
 

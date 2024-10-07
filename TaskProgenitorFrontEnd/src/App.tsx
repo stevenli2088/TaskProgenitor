@@ -4,6 +4,7 @@ import './App.css'
 import InputField from './components/InputField'
 import { Task } from './models/task';
 import TaskList from './components/TaskList';
+import { Box, Typography } from '@mui/material';
 
 const App: React.FC = () => {
   const [taskName, setTaskName] = useState<string>("");
@@ -23,8 +24,8 @@ const App: React.FC = () => {
 
   return (
     <>
-        <div>
-          <span className="heading">Task Progenitor</span>
+        <Box>
+          <Typography variant='h2'>Task Progenitor</Typography>
           <InputField taskName={taskName} 
           setTaskName={setTaskName} 
           handleAdd={handleAdd}/>
@@ -34,7 +35,7 @@ const App: React.FC = () => {
           {/* {tasks.map((t) => (
             <li>{t.taskName}</li>
           ))} */}
-        </div>
+        </Box>
         
     </>
   )
