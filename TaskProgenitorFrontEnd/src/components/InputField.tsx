@@ -13,10 +13,11 @@ const InputField = ({taskName, setTaskName, handleAdd}: Props) => {
   return (
     <Box className= "input" 
     component="form"
+    
+    noValidate
     sx={{ '& .MuiInputLabel-root': { color: 'white', 
       m: 1,
-      width: '25ch', 
-      borderColor:'white',
+      width: '50ch', 
        } }}
     onSubmit={(e) => {
       handleAdd(e);
