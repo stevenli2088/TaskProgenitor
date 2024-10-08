@@ -2,18 +2,17 @@ import React, { useRef } from 'react';
 import './styles.css';
 import Button from '@mui/material/Button';
 import { Box, TextField } from '@mui/material';
-import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import { TaskFormData } from '../models/taskFormData';
 import dayjs from 'dayjs';
 interface Props{
     taskFormData: TaskFormData;
-    setTaskFormData: React.Dispatch<React.SetStateAction<TaskFormData>>;
     handleAdd:(e: React.FormEvent)=>void;
     handleInputChange:(e: React.ChangeEvent<HTMLInputElement>)=>void;
     handleDateChange:(e: dayjs.Dayjs | null )=>void;
 }
 
-const InputFields = ({taskFormData, setTaskFormData, handleAdd, handleInputChange, handleDateChange}: Props) => {
+const InputFields = ({taskFormData, handleAdd, handleInputChange, handleDateChange}: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <Box className= "input" 

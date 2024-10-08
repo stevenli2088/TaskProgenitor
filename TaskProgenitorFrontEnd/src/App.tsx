@@ -4,7 +4,7 @@ import './App.css'
 import InputFields from './components/InputFields'
 import { Task } from './models/task';
 import TaskList from './components/TaskList';
-import { Box, Typography } from '@mui/material';
+import { Box, FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
 import { TaskFormData } from './models/taskFormData';
 import dayjs from 'dayjs';
 
@@ -15,7 +15,7 @@ const App: React.FC = () => {
     dueDate: null
   });
   const [tasks, setTasks] = useState<Task[]>([]);
-  
+  const [isAlertMode, setIsAlertMode] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name);
@@ -23,6 +23,9 @@ const App: React.FC = () => {
       ...prevFormData,
       [name]: value,
     }));
+  };
+  const handleAlertToggle = () => {
+    setIsAlertMode(prev => !prev);
   };
   const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     setTaskFormData((prevFormData) => ({
@@ -55,12 +58,15 @@ const App: React.FC = () => {
         <Box>
           <Typography variant='h2'>Task Progenitor</Typography>
           <InputFields taskFormData={taskFormData} 
-          setTaskFormData={setTaskFormData} 
           handleAdd={handleAdd}
           handleInputChange={handleInputChange}
           handleDateChange={handleDateChange}/>
+          <FormGroup>
+            <FormControlLabel control={<Switch defaultChecked checked={isAlertMode} onChange={handleAlertToggle}/>} label = "Alert Mode" />
+          </FormGroup>
           <TaskList tasks={tasks}
           setTasks={setTasks}
+          isAlertMode={isAlertMode}
           />
           {/* {tasks.map((t) => (
             <li>{t.taskName}</li>
