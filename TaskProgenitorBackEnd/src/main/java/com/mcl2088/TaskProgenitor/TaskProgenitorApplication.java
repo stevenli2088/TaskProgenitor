@@ -14,9 +14,5 @@ public class TaskProgenitorApplication {
 		SpringApplication.run(TaskProgenitorApplication.class, args);
 
 	}
-	@GetMapping
-	public List<String> hello(){
-		return List.of("Task", "Manager");
-	}
 
 }
