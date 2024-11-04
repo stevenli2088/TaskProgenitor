@@ -4,6 +4,6 @@ export interface Task{
     id: number;
     taskName: string;
     description: string;
-    dueDate: dayjs.Dayjs | null;
+    deadline: dayjs.Dayjs | null;
     isComplete: boolean;
 }

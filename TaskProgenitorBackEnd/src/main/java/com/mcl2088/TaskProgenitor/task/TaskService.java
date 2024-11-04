@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class TaskService {
             throw new IllegalStateException("Task with id " + taskId + " already exists.");
         }
         if(task.getDateCreated() == null){
-            task.setDateCreated(LocalDate.now());
+            task.setDateCreated(ZonedDateTime.now());
         }
 
         taskRepository.save(task);
@@ -42,7 +42,7 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
     @Transactional
-    public void updateTask(Long taskId, LocalDate deadline, String taskName, String description, Boolean completed){
+    public void updateTask(Long taskId, ZonedDateTime deadline, String taskName, String description, Boolean completed){
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalStateException("Task with id " + taskId + " does not exist."));
         if(deadline != null && !Objects.equals(task.getDeadline(),deadline)){
             task.setDeadline(deadline);

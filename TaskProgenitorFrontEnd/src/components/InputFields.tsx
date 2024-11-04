@@ -55,7 +55,7 @@ const InputFields = ({taskFormData, handleAdd, handleInputChange, handleDateChan
       />
       <DateTimePicker
           label="Due Date"
-          value={taskFormData.dueDate}
+          value={taskFormData.deadline}
           name = "dueDate"
           onChange={handleDateChange}
         />

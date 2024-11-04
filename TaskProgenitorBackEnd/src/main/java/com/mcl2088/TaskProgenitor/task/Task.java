@@ -1,10 +1,9 @@
 package com.mcl2088.TaskProgenitor.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Period;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 
 @Entity
@@ -26,8 +25,10 @@ public class Task {
 
 
     private String description;
-    private LocalDate deadline;
-    private LocalDate dateCreated;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime deadline;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime dateCreated;
     @Transient
     private String daysLeft;
     @Transient
@@ -41,7 +42,7 @@ public class Task {
 
     }
 
-    public Task(String taskName, String assigner, String description, LocalDate deadline,  LocalDate dateCreated) {
+    public Task(String taskName, String assigner, String description, ZonedDateTime deadline,  ZonedDateTime dateCreated) {
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
@@ -49,7 +50,7 @@ public class Task {
         this.dateCreated = dateCreated;
     }
 
-    public Task(long id, String taskName, String assigner, String description, LocalDate deadline, LocalDate dateCreated) {
+    public Task(long id, String taskName, String assigner, String description, ZonedDateTime deadline, ZonedDateTime dateCreated) {
         this.id = id;
         this.taskName = taskName;
         this.assigner = assigner;
@@ -106,16 +107,16 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDate getDeadline() {
+    public ZonedDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(ZonedDateTime deadline) {
         this.deadline = deadline;
     }
 
     public String getDaysLeft() {
-        LocalDate now = LocalDate.now();
+        ZonedDateTime now = ZonedDateTime.now();
         long days = ChronoUnit.DAYS.between(now, deadline);
 
         return String.format("%d days", days);
@@ -133,16 +134,16 @@ public class Task {
         this.daysLeft = daysLeft;
     }
 
-    public LocalDate getDateCreated() {
+    public ZonedDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(LocalDate dateCreated) {
+    public void setDateCreated(ZonedDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }
 
     public boolean isDueToday() {
-        LocalDate now = LocalDate.now();
+        ZonedDateTime now = ZonedDateTime.now();
         return now.equals(deadline);
     }
 
@@ -152,7 +153,7 @@ public class Task {
 
 
     public boolean isOverdue() {
-        LocalDate now = LocalDate.now();
+        ZonedDateTime now = ZonedDateTime.now();
         return now.isAfter(deadline);
     }
 

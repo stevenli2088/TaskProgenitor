@@ -8,29 +8,50 @@ import Button from '@mui/material/Button';
 import "./styles.css";
 import dayjs from 'dayjs';
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { updateTask, deleteTask } from '../api';
 
 
 type Props = {
     task: Task,
-    tasks: Task[],
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
     isAlertMode: boolean;
     onEdit: (task: Task) => void;
 }
 
-const TaskCard: React.FC<Props> = ({task, tasks, setTasks, isAlertMode, onEdit}) => {
-  const handleDelete = (id: number) => {
-    const updatedTasks = tasks.filter((t) => t.id !== id);
-    setTasks(updatedTasks);
-};
-const onDone = () => {    
-  const updatedTask = { ...task, isComplete: !task.isComplete };
-  
-  const updatedTasks = tasks.map(t => t.id === task.id ? updatedTask : t);
-  setTasks(updatedTasks);
-};
-const isOverdue = task.dueDate && dayjs().isAfter(task.dueDate); 
-const isDueSoon = task.dueDate && dayjs().add(1, 'day').isAfter(task.dueDate) && !isOverdue;  
+const TaskCard: React.FC<Props> = ({task, isAlertMode, onEdit}) => {
+  const queryClient = useQueryClient();
+
+  // Mutation to update task completion status
+  const toggleCompleteMutation = useMutation({
+    mutationFn: (updatedTask: Task) => updateTask(updatedTask.id, updatedTask),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['tasks']}); // Refetch tasks after updating
+    },
+    onError: (error) => {
+      console.error('Error updating task card:', error);
+    },
+  });
+
+  // Mutation to delete task
+  const deleteMutation = useMutation({
+    mutationFn: (taskId: number) => deleteTask(taskId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['tasks']}); // Refetch tasks after deleting
+    },
+    onError: (error) => {
+      console.error('Error deleting task card:', error);
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(task.id);
+  };
+  const onDone = () => {
+    const updatedTask = { ...task, isComplete: !task.isComplete };
+    toggleCompleteMutation.mutate(updatedTask);
+  };
+const isOverdue = task.deadline && dayjs().isAfter(task.deadline); 
+const isDueSoon = task.deadline && dayjs().add(1, 'day').isAfter(task.deadline) && !isOverdue;  
 
   const alert = isOverdue
     ? {text: "Overdue", color:'rgba(255, 0, 0, 0.3)'}
@@ -54,7 +75,7 @@ const isDueSoon = task.dueDate && dayjs().add(1, 'day').isAfter(task.dueDate) &&
         {task.description}
       </Typography>
       <Typography variant="h6" component="div">
-      {task.dueDate ? (
+      {task.deadline ? (
           isAlertMode ? (
             // Render highlighted due date
             <Typography
@@ -67,18 +88,18 @@ const isDueSoon = task.dueDate && dayjs().add(1, 'day').isAfter(task.dueDate) &&
                 borderRadius: '4px',    // Rounded corners for the highlight
               }}
             >
-              {alert.text}: {task.dueDate?.format("MM/DD/YYYY")} at {task.dueDate.format('LTS')}
+              {alert.text}: {task.deadline?.format("MM/DD/YYYY")} at {task.deadline.format('LTS')}
             </Typography>
           ) : (
             // Render due date normally
             <Typography variant="h6" component="div">
-              Due: {task.dueDate?.format("MM/DD/YYYY")} at {task.dueDate.format('LTS')}
+              Due: {task.deadline?.format("MM/DD/YYYY")} at {task.deadline.format('LTS')}
             </Typography>
           )
         ) : (
-          // Render "No Due Date" if dueDate is null
+          // Render "No Due Date" if deadline is null
           <Typography variant="h6" component="div" sx={{ color: 'gray' }}>
-            No Due Date
+            No Deadline
           </Typography>
         )}
       </Typography>
@@ -95,7 +116,7 @@ const isDueSoon = task.dueDate && dayjs().add(1, 'day').isAfter(task.dueDate) &&
       <FormControlLabel control={<Switch checked={task.isComplete} onChange={onDone}/>} label = "Done" />
     </FormGroup>
     <Button size="small" onClick={() => onEdit(task)}>Edit</Button>
-    <Button size="small" onClick={() => handleDelete(task.id)}>Delete</Button>
+    <Button size="small" onClick={handleDelete}>Delete</Button>
     </CardActions>
   </Box>
     

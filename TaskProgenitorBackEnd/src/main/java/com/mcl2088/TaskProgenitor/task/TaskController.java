@@ -3,7 +3,7 @@ package com.mcl2088.TaskProgenitor.task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @CrossOrigin
@@ -31,7 +31,7 @@ public class TaskController {
     }
     @PutMapping(path = "{taskId}")
     public void updateTask(@PathVariable("taskId") Long taskId,
-                           @RequestParam(required = false) LocalDate deadline,
+                           @RequestParam(required = false) ZonedDateTime deadline,
                            @RequestParam(required = false) String taskName,
                            @RequestParam(required = false) String description,
                            @RequestParam(required = false) Boolean completed){

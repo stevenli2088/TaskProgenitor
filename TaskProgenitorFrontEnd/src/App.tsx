@@ -7,15 +7,42 @@ import TaskList from './components/TaskList';
 import { Box, FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
 import { TaskFormData } from './models/taskFormData';
 import dayjs from 'dayjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { addTask, getTasks } from './api';
 
 const App: React.FC = () => {
+  const queryClient = useQueryClient();
+  
+  // Fetch tasks using useQuery
+  const { data: tasks = [], isLoading, isError } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: getTasks,
+  });
+  
+console.log('isError:', isError);
+console.log('tasks:', tasks);
   const [taskFormData, setTaskFormData] = useState<TaskFormData>({
     taskName: "",
     description: "",
-    dueDate: null
+    deadline: null
   });
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [isAlertMode, setIsAlertMode] = useState(false);
+  // Mutation to add a new task
+  const mutation = useMutation({
+    mutationFn: (newTask: Task) => addTask(newTask),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] }); // Invalidate tasks to refetch after adding
+      setTaskFormData({
+        taskName: "",
+        description: "",
+        deadline: null,
+      });
+    },
+    onError: (error) => {
+      console.error('Error adding task:', error);
+    },
+  });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name);
@@ -30,28 +57,30 @@ const App: React.FC = () => {
   const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     setTaskFormData((prevFormData) => ({
       ...prevFormData,
-      dueDate: newDate,
+      deadline: newDate,
     }));
   };
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    if(taskFormData.taskName){
-      setTasks([...tasks,{id:Date.now(), 
-        taskName:taskFormData.taskName, 
+    if (taskFormData.taskName) {
+      const newTask: Task = {
+        id: Date.now(), // Temporarily using Date.now() for id, replace it with server-generated id if available
+        taskName: taskFormData.taskName,
         description: taskFormData.description,
-        dueDate: taskFormData.dueDate,
-        isComplete: false}]);
-      setTaskFormData(
-        {
-          taskName: "",
-          description: "",
-          dueDate: null
-        }
-      );
+        deadline: taskFormData.deadline,
+        isComplete: false,
+      };
+      mutation.mutate(newTask); // Use mutation to add the new task
     }
-    console.log(taskFormData.taskName);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>; // Display loading state
+  }
+
+  if (isError) {
+    return <div>Error fetching tasks!</div>; // Display error message
+  }
 
   return (
     <>
@@ -65,7 +94,6 @@ const App: React.FC = () => {
             <FormControlLabel control={<Switch defaultChecked checked={isAlertMode} onChange={handleAlertToggle}/>} label = "Alert Mode" />
           </FormGroup>
           <TaskList tasks={tasks}
-          setTasks={setTasks}
           isAlertMode={isAlertMode}
           />
           {/* {tasks.map((t) => (

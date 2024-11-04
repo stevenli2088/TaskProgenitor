@@ -7,20 +7,22 @@ import Button from '@mui/material/Button';
 import dayjs from 'dayjs';
 import { TaskFormData } from '../models/taskFormData';
 import { DateTimePicker } from '@mui/x-date-pickers';
-
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateTask } from '../api/tasks';
 type Props = {
   open: boolean;
   onClose: () => void;
   task: Task | null; // Could be null when not editing
-  onSave: (task: Task) => void;
 };
 
-const TaskEditModal: React.FC<Props> = ({ open, onClose, task, onSave }) => {
+const TaskEditModal: React.FC<Props> = ({ open, onClose, task }) => {
     const [taskEdits, setTaskEdits] = useState<TaskFormData>({
         taskName: "",
         description: "",
-        dueDate: null
+        deadline: null
       });
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (task) {
@@ -28,23 +30,33 @@ const TaskEditModal: React.FC<Props> = ({ open, onClose, task, onSave }) => {
             ...prevFormData,
             taskName: task.taskName,
             description: task.description,
-            dueDate: task.dueDate,
+            deadline: task.deadline,
 
         })); // Set due date for editing
     }
   }, [task]);
-
+  
+  const mutation = useMutation({
+    mutationFn: (updatedTask: Task) => updateTask(task!.id, updatedTask),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['tasks']}); // Invalidate tasks query to refetch
+      onClose(); // Close the modal after saving
+    },
+    onError: (error) => {
+      console.error('Error updating task:', error);
+    },
+  });
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (task) {
-        const updatedTask: Task = {
-            ...task, 
-            taskName: taskEdits.taskName, 
-            description: taskEdits.description, 
-            dueDate: taskEdits.dueDate, 
-          };
-      
-      onSave(updatedTask);
+      const updatedTask: Task = {
+        ...task,
+        taskName: taskEdits.taskName,
+        description: taskEdits.description,
+        deadline: taskEdits.deadline,
+      };
+
+      mutation.mutate(updatedTask); // Trigger the mutation
     }
   };
 
@@ -58,7 +70,7 @@ const TaskEditModal: React.FC<Props> = ({ open, onClose, task, onSave }) => {
   const handleEditDateChange = (newDate: dayjs.Dayjs | null) => {
     setTaskEdits((prevFormData) => ({
       ...prevFormData,
-      dueDate: newDate,
+      deadline: newDate,
     }));
   };
 
@@ -103,8 +115,8 @@ const TaskEditModal: React.FC<Props> = ({ open, onClose, task, onSave }) => {
           />
           <DateTimePicker
           label="Due Date"
-          value={taskEdits.dueDate}
-          name = "dueDate"
+          value={taskEdits.deadline}
+          name = "deadline"
           onChange={handleEditDateChange}
         />
            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
