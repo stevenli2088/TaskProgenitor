@@ -5,5 +5,6 @@ export interface Task{
     taskName: string;
     description: string;
     deadline: dayjs.Dayjs | null;
+    dateCreated: dayjs.Dayjs | null;
     isComplete: boolean;
 }

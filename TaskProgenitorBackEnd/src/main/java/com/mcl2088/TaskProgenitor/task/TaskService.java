@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +43,15 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
     @Transactional
-    public void updateTask(Long taskId, ZonedDateTime deadline, String taskName, String description, Boolean completed){
+    public void updateTask(Long taskId, String ISOdeadline, String taskName, String description, Boolean completed){
+        ZonedDateTime deadline = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                deadline = ZonedDateTime.parse(ISOdeadline);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalStateException("Task with id " + taskId + " does not exist."));
         if(deadline != null && !Objects.equals(task.getDeadline(),deadline)){
             task.setDeadline(deadline);

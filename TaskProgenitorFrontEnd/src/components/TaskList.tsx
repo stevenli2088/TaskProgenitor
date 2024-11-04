@@ -27,8 +27,6 @@ const TaskList: React.FC<Props> = ({tasks, isAlertMode}) => {
 
 
   const sortedTasks = [...tasks].sort((a, b) => {
-    console.log(typeof a.deadline); // "string", "number", etc.
-    console.log(a.deadline); // "2022-01-01T00:00:00.000Z", etc.
     const dateA = dayjs(a.deadline);
     const dateB = dayjs(b.deadline);
     if (dateA === null) return 1;  

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.*;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 @Entity
@@ -25,12 +26,10 @@ public class Task {
 
 
     private String description;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private ZonedDateTime deadline;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private ZonedDateTime dateCreated;
-    @Transient
-    private String daysLeft;
     @Transient
     private boolean dueToday;
     @Transient
@@ -42,21 +41,49 @@ public class Task {
 
     }
 
-    public Task(String taskName, String assigner, String description, ZonedDateTime deadline,  ZonedDateTime dateCreated) {
+    public Task(String taskName, String assigner, String description, String ISOdeadline,  String ISOdateCreated) {
+        this.deadline = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.deadline = ZonedDateTime.parse(ISOdeadline);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
+        this.dateCreated = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.deadline = ZonedDateTime.parse(ISOdateCreated);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
-        this.deadline = deadline;
-        this.dateCreated = dateCreated;
     }
 
-    public Task(long id, String taskName, String assigner, String description, ZonedDateTime deadline, ZonedDateTime dateCreated) {
+    public Task(long id, String taskName, String assigner, String description, String ISOdeadline,  String ISOdateCreated) {
+        this.deadline = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.deadline = ZonedDateTime.parse(ISOdeadline);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
+        this.dateCreated = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.deadline = ZonedDateTime.parse(ISOdateCreated);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
         this.id = id;
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
-        this.deadline = deadline;
-        this.dateCreated = dateCreated;
     }
 
     @Override
@@ -68,7 +95,6 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", deadline=" + deadline +
                 ", dateCreated=" + dateCreated +
-                ", timeLeft=" + daysLeft +
                 ", dueToday=" + dueToday +
                 ", overdue=" + overdue +
                 ", completed=" + completed +
@@ -115,12 +141,7 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public String getDaysLeft() {
-        ZonedDateTime now = ZonedDateTime.now();
-        long days = ChronoUnit.DAYS.between(now, deadline);
 
-        return String.format("%d days", days);
-    }
 
     public boolean isCompleted() {
         return completed;
@@ -130,9 +151,6 @@ public class Task {
         this.completed = completed;
     }
 
-    public void setDaysLeft(String daysLeft) {
-        this.daysLeft = daysLeft;
-    }
 
     public ZonedDateTime getDateCreated() {
         return dateCreated;

@@ -22,6 +22,8 @@ public class TaskController {
     }
     @PostMapping
     public void addTask(@RequestBody Task task){
+        System.out.println(task.getDeadline());
+
         taskService.addTask(task);
     }
     @DeleteMapping(path = "{taskId}")
@@ -31,11 +33,11 @@ public class TaskController {
     }
     @PutMapping(path = "{taskId}")
     public void updateTask(@PathVariable("taskId") Long taskId,
-                           @RequestParam(required = false) ZonedDateTime deadline,
+                           @RequestParam(required = false) String ISOdeadline,
                            @RequestParam(required = false) String taskName,
                            @RequestParam(required = false) String description,
                            @RequestParam(required = false) Boolean completed){
-        taskService.updateTask(taskId, deadline, taskName, description, completed);
+        taskService.updateTask(taskId, ISOdeadline, taskName, description, completed);
 
     }
 
