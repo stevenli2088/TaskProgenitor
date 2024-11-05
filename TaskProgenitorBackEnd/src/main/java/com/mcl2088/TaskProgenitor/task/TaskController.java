@@ -3,7 +3,6 @@ package com.mcl2088.TaskProgenitor.task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @CrossOrigin
@@ -22,8 +21,6 @@ public class TaskController {
     }
     @PostMapping
     public void addTask(@RequestBody Task task){
-        System.out.println(task.getDeadline());
-
         taskService.addTask(task);
     }
     @DeleteMapping(path = "{taskId}")

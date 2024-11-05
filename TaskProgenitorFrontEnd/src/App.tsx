@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './App.css'
 import InputFields from './components/InputFields'
-import { Task } from './models/task';
 import { TaskPayload } from './models/taskPayload';
 import TaskList from './components/TaskList';
 import { Box, FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
