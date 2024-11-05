@@ -42,7 +42,7 @@ const App: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(name);
+    //console.log(name);
     setTaskFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -67,7 +67,7 @@ const App: React.FC = () => {
         description: taskFormData.description,
         deadline: taskFormData.deadline ? taskFormData.deadline.toISOString() : null,
         dateCreated: dayjs().toISOString(),
-        isComplete: false,
+        isCompleted: false,
       };
       console.log(dayjs().toISOString());
       mutation.mutate(newTask); // Use mutation to add the new task

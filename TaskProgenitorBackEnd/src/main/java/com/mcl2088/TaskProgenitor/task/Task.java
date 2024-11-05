@@ -1,11 +1,11 @@
 package com.mcl2088.TaskProgenitor.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.*;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table
@@ -30,10 +30,12 @@ public class Task {
     private ZonedDateTime deadline;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private ZonedDateTime dateCreated;
+    //Otherwise Jackson will changed this to completed in JSON
+    @JsonProperty("isCompleted")
+    private boolean isCompleted;
     @Transient
     private boolean dueToday;
-    @Transient
-    private boolean completed;
+
     @Transient
     private boolean overdue;
 
@@ -61,6 +63,7 @@ public class Task {
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
+        this.isCompleted = false;
     }
 
     public Task(long id, String taskName, String assigner, String description, String ISOdeadline,  String ISOdateCreated) {
@@ -84,6 +87,30 @@ public class Task {
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
+        this.isCompleted = false;
+    }
+    public Task(long id, String taskName, String assigner, String description, String ISOdeadline,  String ISOdateCreated, boolean isCompleted) {
+        this.deadline = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.deadline = ZonedDateTime.parse(ISOdeadline);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
+        this.dateCreated = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.dateCreated = ZonedDateTime.parse(ISOdateCreated);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
+        this.id = id;
+        this.taskName = taskName;
+        this.assigner = assigner;
+        this.description = description;
+        this.isCompleted = isCompleted;
     }
     public Task(long id, String taskName, String assigner, String description, String ISOdeadline) {
         this.deadline = null;
@@ -99,6 +126,7 @@ public class Task {
         this.taskName = taskName;
         this.assigner = assigner;
         this.description = description;
+        this.isCompleted = false;
     }
 
     @Override
@@ -112,7 +140,7 @@ public class Task {
                 ", dateCreated=" + dateCreated +
                 ", dueToday=" + dueToday +
                 ", overdue=" + overdue +
-                ", completed=" + completed +
+                ", completed=" + isCompleted +
                 '}';
     }
 
@@ -157,15 +185,13 @@ public class Task {
     }
 
 
-
     public boolean isCompleted() {
-        return completed;
+        return isCompleted;
     }
 
     public void setCompleted(boolean completed) {
-        this.completed = completed;
+        isCompleted = completed;
     }
-
 
     public ZonedDateTime getDateCreated() {
         return dateCreated;

@@ -43,25 +43,31 @@ public class TaskService {
         taskRepository.deleteById(taskId);
     }
     @Transactional
-    public void updateTask(Long taskId, String ISOdeadline, String taskName, String description, Boolean completed){
+    public void updateTask(Long taskId, String ISOdeadline, String taskName, String description, Boolean isCompleted){
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalStateException("Task with id " + taskId + " does not exist."));
         ZonedDateTime deadline = null;
         if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
             try {
+                System.out.println("ISOdeadline");
                 deadline = ZonedDateTime.parse(ISOdeadline);
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
             }
         }
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new IllegalStateException("Task with id " + taskId + " does not exist."));
         if(deadline != null && !Objects.equals(task.getDeadline(),deadline)){
             task.setDeadline(deadline);
         }
         if(taskName != null && taskName.length() > 0 && !Objects.equals(task.getTaskName(),taskName)){
+            System.out.println("taskName");
             task.setTaskName(taskName);
         }
         if(description != null && description.length() > 0 && !Objects.equals(task.getDescription(),description)){
+            System.out.println("description");
             task.setDescription(description);
         }
-        task.setCompleted(completed);
+        if(isCompleted != null) {
+            System.out.println("isCompleted");
+            task.setCompleted(isCompleted);
+        }
     }
 }

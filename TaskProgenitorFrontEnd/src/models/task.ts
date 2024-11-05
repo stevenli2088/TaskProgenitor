@@ -6,5 +6,5 @@ export interface Task{
     description: string;
     deadline: dayjs.Dayjs | null;
     dateCreated: dayjs.Dayjs | null;
-    isComplete: boolean;
+    isCompleted: boolean; // Ensure isComplete is part of the Task interface
 }

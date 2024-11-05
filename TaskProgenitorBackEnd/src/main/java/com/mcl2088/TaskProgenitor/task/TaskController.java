@@ -33,8 +33,8 @@ public class TaskController {
                            @RequestParam(required = false) String ISOdeadline,
                            @RequestParam(required = false) String taskName,
                            @RequestParam(required = false) String description,
-                           @RequestParam(required = false) Boolean completed){
-        taskService.updateTask(taskId, ISOdeadline, taskName, description, completed);
+                           @RequestParam(required = false) Boolean isCompleted){
+        taskService.updateTask(taskId, ISOdeadline, taskName, description, isCompleted);
 
     }
 

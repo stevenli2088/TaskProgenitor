@@ -4,5 +4,5 @@ export interface TaskPayload {
     description: string;
     deadline: string | null;
     dateCreated: string | null;
-    isComplete: boolean;
+    isCompleted: boolean; // Ensure isComplete is part of the TaskPayload interface
 }
