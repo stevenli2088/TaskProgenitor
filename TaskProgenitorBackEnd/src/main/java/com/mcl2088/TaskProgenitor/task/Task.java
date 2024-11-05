@@ -53,7 +53,7 @@ public class Task {
         this.dateCreated = null;
         if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
             try {
-                this.deadline = ZonedDateTime.parse(ISOdateCreated);
+                this.dateCreated = ZonedDateTime.parse(ISOdateCreated);
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
             }
@@ -75,11 +75,26 @@ public class Task {
         this.dateCreated = null;
         if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
             try {
-                this.deadline = ZonedDateTime.parse(ISOdateCreated);
+                this.dateCreated = ZonedDateTime.parse(ISOdateCreated);
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
             }
         }
+        this.id = id;
+        this.taskName = taskName;
+        this.assigner = assigner;
+        this.description = description;
+    }
+    public Task(long id, String taskName, String assigner, String description, String ISOdeadline) {
+        this.deadline = null;
+        if (ISOdeadline != null && !ISOdeadline.isEmpty()) {
+            try {
+                this.deadline = ZonedDateTime.parse(ISOdeadline);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid ISO deadline format: " + ISOdeadline, e);
+            }
+        }
+        this.dateCreated = ZonedDateTime.now(this.deadline.getZone());
         this.id = id;
         this.taskName = taskName;
         this.assigner = assigner;
