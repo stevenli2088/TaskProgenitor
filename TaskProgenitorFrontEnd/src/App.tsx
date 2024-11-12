@@ -100,7 +100,6 @@ const App: React.FC = () => {
             <li>{t.taskName}</li>
           ))} */}
         </Box>
-        
     </>
   )
 }
