@@ -20,28 +20,6 @@
     outline: none;
 }
 
-.input__submit{
-    position:relative;
-    width: 110px;
-    height: 50px;
-    margin: 12px;
-    border-radius: 15px;
-    border: none;
-    font-size: 20px;
-    right: 0px;
-    background-color: gray;
-    color: white;
-    transition: 0.2s all;
-    box-shadow: 0 0 10px black;
-}
-
-.input__submit:hover{
-    background-color: darkgray;
-}
-.input__submit:active{
-    transform: scale(0.8);
-    box-shadow: 0 0 5px black;
-}
 
 .tasks{
     display: flex;

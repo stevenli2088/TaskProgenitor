@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import './App.css'
-import InputFields from './components/InputFields'
-import { TaskPayload } from './models/taskPayload';
-import TaskList from './components/TaskList';
+import './AllTasksPage.css';
+import InputFields from '../../components/InputFields';
+import { TaskPayload } from '../../models/taskPayload';
+import TaskList from '../../components/TaskList';
 import { Box, FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
-import { TaskFormData } from './models/taskFormData';
+import { TaskFormData } from '../../models/taskFormData';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { addTask, getTasks } from './api';
+import { addTask, getTasks } from '../../api';
 
-const App: React.FC = () => {
+const AllTasksPage: React.FC = () => {
   const queryClient = useQueryClient();
   
   // Fetch tasks using useQuery
@@ -84,7 +84,16 @@ const App: React.FC = () => {
 
   return (
     <>
-        <Box>
+        <Box 
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          height: '100vh',
+          padding: 2,
+        }}
+        >
           <Typography variant='h2'>Task Progenitor</Typography>
           <InputFields taskFormData={taskFormData} 
           handleAdd={handleAdd}
@@ -93,15 +102,15 @@ const App: React.FC = () => {
           <FormGroup>
             <FormControlLabel control={<Switch defaultChecked checked={isAlertMode} onChange={handleAlertToggle}/>} label = "Alert Mode" />
           </FormGroup>
+          <Box>
+            <Typography variant='h4'>All Tasks</Typography>
+          </Box>
           <TaskList tasks={tasks}
           isAlertMode={isAlertMode}
           />
-          {/* {tasks.map((t) => (
-            <li>{t.taskName}</li>
-          ))} */}
         </Box>
     </>
   )
 }
 
-export default App
+export default AllTasksPage
