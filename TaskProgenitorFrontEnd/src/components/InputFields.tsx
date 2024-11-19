@@ -23,14 +23,26 @@ const InputFields = ({ taskFormData, handleAdd, handleInputChange, handleDateCha
         flexDirection: 'column',
         alignItems: 'center',
         width: '90%',
-        maxWidth: '450px',
+        maxWidth: '1000px',
+        backgroundColor: '#f5f5f5', // Light gray background color
+        padding: '24px', // Add more padding
+        borderRadius: '8px', // Rounded corners
+        border: '1px solid #d3d3d3',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
         '& .MuiInputLabel-root': {
           color: 'black',
           m: 1,
         },
-        '& .MuiTextField-root, & .MuiButton-root, & .MuiDatePicker-root': {
+        '& .MuiTextField-root, & .MuiDatePicker-root': {
           marginBottom: '16px', // Add 16px spacing between each element
           width: '100%', // Full width of the parent container
+          
+        },
+        '& .MuiInputBase-root': {
+          color: 'black', // Change text color to black
+        },
+        '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: '#d3d3d3', // Light gray border color when focused
         },
       }}
       onSubmit={(e) => {
@@ -47,6 +59,15 @@ const InputFields = ({ taskFormData, handleAdd, handleInputChange, handleDateCha
         ref={inputRef}
         value={taskFormData.taskName}
         onChange={handleInputChange}
+        slotProps={{
+          inputLabel: {
+            sx: {
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+            },
+          },
+        }}
       />
       <TextField
         fullWidth
@@ -75,8 +96,9 @@ const InputFields = ({ taskFormData, handleAdd, handleInputChange, handleDateCha
         type="submit"
         variant="contained"
         sx={{
-          width: '70%', // Ensure full width for Button
-          backgroundColor: '#f0f0f0', // Slightly off-white color
+          marginBottom: '16px', // Add 16px spacing between each element
+          width: '70%', // Full width of the parent container
+          backgroundColor: '#f7f7f7', // Slightly off-white color for the button
           color: 'black', // Black text
           '&:hover': {
             backgroundColor: '#e0e0e0', // Slightly darker off-white color on hover

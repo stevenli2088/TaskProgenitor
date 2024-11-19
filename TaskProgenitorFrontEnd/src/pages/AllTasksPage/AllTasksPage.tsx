@@ -3,11 +3,13 @@ import './AllTasksPage.css';
 import InputFields from '../../components/InputFields';
 import { TaskPayload } from '../../models/taskPayload';
 import TaskList from '../../components/TaskList';
-import { Box, FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
+import { Box, FormControlLabel, FormGroup, Switch, Typography, CircularProgress } from '@mui/material';
 import { TaskFormData } from '../../models/taskFormData';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { addTask, getTasks } from '../../api';
+import { addTask } from '../../api';
+import TaskAppBar from '../../components/TaskAppBar'; // Import the AppBar component
+import apiClient from '../../api/apiClient';
 
 const AllTasksPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -15,7 +17,7 @@ const AllTasksPage: React.FC = () => {
   // Fetch tasks using useQuery
   const { data: tasks = [], isLoading, isError } = useQuery({
     queryKey: ['tasks'],
-    queryFn: getTasks,
+    queryFn: () => apiClient.get('/tasks').then(res => res.data),
   });
   
   const [taskFormData, setTaskFormData] = useState<TaskFormData>({
@@ -75,16 +77,21 @@ const AllTasksPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Display loading state
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (isError) {
-    return <div>Error fetching tasks!</div>; // Display error message
+    return <Typography variant="h6">Error loading tasks.</Typography>;
   }
 
   return (
     <>
-        <Box 
+      <TaskAppBar /> {/* Add the AppBar component */}
+      <Box 
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -93,22 +100,22 @@ const AllTasksPage: React.FC = () => {
           height: '100vh',
           padding: 2,
         }}
-        >
-          <Typography variant='h2'>Task Progenitor</Typography>
-          <InputFields taskFormData={taskFormData} 
+      >
+        <Typography variant='h2'>Task Progenitor</Typography>
+        <InputFields taskFormData={taskFormData} 
           handleAdd={handleAdd}
           handleInputChange={handleInputChange}
           handleDateChange={handleDateChange}/>
-          <FormGroup>
-            <FormControlLabel control={<Switch defaultChecked checked={isAlertMode} onChange={handleAlertToggle}/>} label = "Alert Mode" />
-          </FormGroup>
-          <Box>
-            <Typography variant='h4'>All Tasks</Typography>
-          </Box>
-          <TaskList tasks={tasks}
-          isAlertMode={isAlertMode}
-          />
+        <FormGroup>
+          <FormControlLabel control={<Switch defaultChecked checked={isAlertMode} onChange={handleAlertToggle}/>} label = "Alert Mode" />
+        </FormGroup>
+        <Box>
+          <Typography variant='h4'>All Tasks</Typography>
         </Box>
+        <TaskList tasks={tasks}
+          isAlertMode={isAlertMode}
+        />
+      </Box>
     </>
   )
 }
